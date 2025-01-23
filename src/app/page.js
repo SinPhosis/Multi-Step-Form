@@ -9,7 +9,7 @@ export default function Home() {
   const [step, setStep] = useState(1)
   return (
     <>
-    {step === 1 && < StepOne setStep={setStep} />}
+    {step === 1 && < StepTwo setStep={setStep} />}
     {step === 2 && < StepTwo setStep={setStep} />}
     {step === 3 && < StepThree setStep={setStep} />}
     </>
