@@ -3,15 +3,22 @@
 import { useState } from "react";
 
 export const StepTwo = ({ setStep }) => {
-  const [formValue, setFormValue] = useState({});
+  const [formValue, setFormValue] = useState(() => {
+    const preValue = JSON.parse(localStorage.getItem("StepTwo")) || {};
+    return preValue
+  });
   const [errors, setError] = useState({});
+
+  useEffect(() => {
+    localStorage.setItem("StepTwo", JSON.stringify(formValue));
+  }, [formValue]);
 
   const back = () => {
     setStep(1);
   };
 
   const onSubmit = () => {
-    let nextStep = false;
+    let nextStep = true;
 
     console.log(formValue);
 
@@ -19,13 +26,13 @@ export const StepTwo = ({ setStep }) => {
 
     const phoneRegex = /^\d{8}$/;
 
-    if (!formValue.email || formValue.email.length === 0) {
+    if (!formValue.email || formValue.email.trim().length === 0) {
       setError((prev) => ({
         ...prev,
         email: "Please enter your email.",
       }));
       nextStep = false;
-    } else if (!emailRegex.test(formValue.email)) {
+    } else if (!emailRegex.test(formValue.email.trip())) {
       setError((prev) => ({
         ...prev,
         email: "Please enter a valid email address",
@@ -34,7 +41,7 @@ export const StepTwo = ({ setStep }) => {
     } else {
       setError((prev) => ({ ...prev, email: "" }));
     }
-    if (!formValue.password || formValue.password.length === 0) {
+    if (!formValue.password || formValue.password.trip().length === 0) {
       setError((prev) => ({
         ...prev,
         password: "Please enter your password.",
@@ -83,13 +90,22 @@ export const StepTwo = ({ setStep }) => {
   };
 
   console.log(errors);
-  const email = (e) => setFormValue({ ...formValue, email: e.target.value });
-  const password = (e) =>
+  const email = (e) => {
+    setError((prevErrors) => ({ ...prevErrors, email: null }));
+    setFormValue({ ...formValue, email: e.target.value });
+  };
+  const password = (e) => {
+    setError((prevErrors) => ({ ...prevErrors, password: null }));
     setFormValue({ ...formValue, password: e.target.value });
-  const confirmPassword = (e) =>
-    setFormValue({ ...formValue, confirmPassword: e.target.value });
-  const phoneNumber = (e) =>
-    setFormValue({ ...formValue, phoneNumber: e.target.value });
+  };
+  const confirmPassword = (e) => {
+    setError((prevERrors) => ({ ...prevErrors, confirmPassword: null }));
+    setFormValue({ ...prev, confirmPassword: e.target.value });
+  };
+  const phoneNumber = (e) => {
+    setError((prevErrors) => ({ ...prevErrors, phoneNumber: null }));
+    setFormValue({ ...prev, phoneNumber: e.target.value });
+  };
   return (
     <div className="w-full h-full px-[480px] pt-[182px] pb-[187px] bg-[#f3f3f3] justify-center items-center inline-flex overflow-hidden">
       <div className="w-[480px] h-[655px] p-8 bg-white rounded-lg flex-col justify-between items-center inline-flex">
@@ -118,12 +134,12 @@ export const StepTwo = ({ setStep }) => {
                   <input
                     placeholder="Your email"
                     id="email"
-                    onChange={email}
+                    onChange={formValue.email || ""}
                     className="h-11 w-[416px] p-3 rounded-lg border border-[#0ca5e9] justify-start text-base font-normal font-['Inter'] leading-tight items-center inline-flex"
                   />
-                  {errors.email && (
+                  {errors.email ? (
                     <p className="text-red-500">{errors.email}</p>
-                  )}
+                  ) : null}
                 </div>
               </div>
               <div className="h-[68px] flex-col justify-start items-start gap-2 inline-flex mb-[20px]">
@@ -141,14 +157,12 @@ export const StepTwo = ({ setStep }) => {
                     type="number"
                     placeholder="Your phone Number"
                     id="phoneNumber"
-                    onChange={phoneNumber}
+                    onChange={formValue.phoneNumber || ""}
                     className="h-11 w-[416px] p-3 rounded-lg border border-[#0ca5e9] justify-start text-base font-normal font-['Inter'] leading-tight items-center inline-flex"
                   />
                   {errors.phoneNumber ? (
                     <p className="text-red-500">{errors.phoneNumber}</p>
-                  ) : (
-                    <></>
-                  )}
+                  ) : null}
                 </div>
               </div>
               <div className="h-[68px] flex-col justify-start items-start gap-2 inline-flex mb-[20px]">
@@ -166,14 +180,12 @@ export const StepTwo = ({ setStep }) => {
                     type="password"
                     placeholder="password"
                     id="password"
-                    onChange={password}
+                    onChange={formValue.password || ""}
                     className="h-11 w-[416px] p-3 rounded-lg border border-[#0ca5e9] justify-start text-base font-normal font-['Inter'] leading-tight items-center inline-flex"
                   />
-                  {errors.confirmPassword ? (
-                    <p className="text-red-500">{errors.confirmPassword}</p>
-                  ) : (
-                    <></>
-                  )}
+                  {errors.password ? (
+                    <p className="text-red-500">{errors.password}</p>
+                  ) : null}
                 </div>
               </div>
               <div className="h-[68px] flex-col justify-start items-start gap-2 inline-flex mb-[20px]">
@@ -191,14 +203,12 @@ export const StepTwo = ({ setStep }) => {
                     type="password"
                     placeholder="Confirm password"
                     id="confirmPassword"
-                    onChange={confirmPassword}
+                    onChange={formValue.confirmPassword || ""}
                     className="h-11 w-[416px] p-3 rounded-lg border border-[#0ca5e9] justify-start text-base font-normal font-['Inter'] leading-tight items-center inline-flex"
                   />
-                  {errors.confirmPassword ? (
-                    <p className="text-red-500">{errors.confirmPassword}</p>
-                  ) : (
-                    <></>
-                  )}
+                  {errors.password ? (
+                    <p className="text-red-500">{errors.password}</p>
+                  ) : null}
                 </div>
               </div>
             </div>
