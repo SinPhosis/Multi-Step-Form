@@ -2,11 +2,19 @@
 import { useEffect, useState } from "react";
 
 export const StepOne = ({ setStep }) => {
+  const [localStorage, setLocalStorageData] = useState(null);
   const [formValue, setFormValue] = useState(() => {
     const preValue = JSON.parse(localStorage.getItem("StepOne")) || {};
     return preValue;
   });
   const [errors, setError] = useState({});
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const data = localStorage.getItem('myData');
+      setLocalStorageData(data);
+    }
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("StepOne", JSON.stringify(formValue));
