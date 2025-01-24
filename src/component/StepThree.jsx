@@ -1,6 +1,5 @@
 "use client";
 
-import next from "next";
 import { useState } from "react";
 
 export const StepThree = ({ setStep }) => {
@@ -20,46 +19,43 @@ export const StepThree = ({ setStep }) => {
   };
 
   const onSubmit = () => {
-    let nextStep = true; // Start with the assumption that all validations pass
+    let nextStep = true;
     const date = new Date(formValue.date);
     const today = new Date();
     const minDate = new Date(
       today.getFullYear() - 18,
       today.getMonth(),
       today.getDate()
-    ); // Calculate date for 18 years ago
+    );
 
     console.log(formValue);
 
-    // Validate date
     if (!formValue.date) {
       setError((prev) => ({
         ...prev,
         date: "Please enter your birthday.",
       }));
-      nextStep = false; // Validation failed
+      nextStep = false;
     } else if (date > minDate) {
       setError((prev) => ({
         ...prev,
         date: "You have to be 18 or older.",
       }));
-      nextStep = false; // Validation failed
+      nextStep = false;
     } else {
-      setError((prev) => ({ ...prev, date: "" })); // Clear any previous error
+      setError((prev) => ({ ...prev, date: "" }));
     }
 
-    // Validate profile picture
     if (!formValue.profilePicture) {
       setError((prev) => ({
         ...prev,
         profilePicture: "Please upload your profile picture.",
       }));
-      nextStep = false; // Validation failed
+      nextStep = false;
     } else {
-      setError((prev) => ({ ...prev, profilePicture: "" })); // Clear any previous error
+      setError((prev) => ({ ...prev, profilePicture: "" }));
     }
 
-    // Proceed to the next step if all validations pass
     if (nextStep) {
       setStep(4);
     }
@@ -94,7 +90,8 @@ export const StepThree = ({ setStep }) => {
                   type="date"
                   value={formValue.date}
                   onChange={(e) =>
-                    setFormValue((prev) => ({ ...prev, date: e.target.value }))}
+                    setFormValue((prev) => ({ ...prev, date: e.target.value }))
+                  }
                 />
                 {errors.date ? (
                   <p className="text-red-500">{errors.date}</p>

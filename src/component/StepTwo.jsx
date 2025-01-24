@@ -15,15 +15,24 @@ export const StepTwo = ({ setStep }) => {
 
     console.log(formValue);
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const phoneRegex = /^\d{8}$/;
+
     if (!formValue.email || formValue.email.length === 0) {
       setError((prev) => ({
         ...prev,
         email: "Please enter your email.",
       }));
       nextStep = false;
+    } else if (!emailRegex.test(formValue.email)) {
+      setError((prev) => ({
+        ...prev,
+        email: "Please enter a valid email address",
+      }));
+      nextStep = false;
     } else {
       setError((prev) => ({ ...prev, email: "" }));
-      nextStep = true;
     }
     if (!formValue.password || formValue.password.length === 0) {
       setError((prev) => ({
@@ -49,6 +58,7 @@ export const StepTwo = ({ setStep }) => {
       nextStep = false;
     } else {
       setError((prev) => ({ ...prev, confirmPassword: "" }));
+      nextStep = true;
     }
     if (!formValue.phoneNumber || formValue.phoneNumber.length === 0) {
       setError((prev) => ({
@@ -56,10 +66,17 @@ export const StepTwo = ({ setStep }) => {
         phoneNumber: "Please enter your phone number",
       }));
       nextStep = false;
+    } else if (!phoneRegex.test(formValue.phoneNumber)) {
+      setError((prev) => ({
+        ...prev,
+        phoneNumber: "Please enter a valid phone number (8 digits).",
+      }));
+      nextStep = false;
     } else {
       setError((prev) => ({ ...prev, phoneNumber: "" }));
       nextStep = true;
     }
+
     if (nextStep) {
       setStep(3);
     }
@@ -104,10 +121,8 @@ export const StepTwo = ({ setStep }) => {
                     onChange={email}
                     className="h-11 w-[416px] p-3 rounded-lg border border-[#0ca5e9] justify-start text-base font-normal font-['Inter'] leading-tight items-center inline-flex"
                   />
-                  {errors.email ? (
+                  {errors.email && (
                     <p className="text-red-500">{errors.email}</p>
-                  ) : (
-                    <></>
                   )}
                 </div>
               </div>
