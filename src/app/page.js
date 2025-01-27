@@ -8,7 +8,10 @@ import { StepFour } from "@/component/stepFour";
 
 export default function Home() {
   const [step, setStep] = useState(1);
-  const [localStorageData, setLocalStorageData] = useState(null);
+  if (typeof Window !== 'undefined')
+    return Number(localStorage.getItem('step') || 1)
+  
+  const [localStorage, setLocalStorageData] = useState(null);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {

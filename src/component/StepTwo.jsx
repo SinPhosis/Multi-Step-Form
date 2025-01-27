@@ -4,12 +4,16 @@ import { useState, useEffect } from "react";
 
 export const StepTwo = ({ setStep }) => {
   const [formValue, setFormValue] = useState(() => {
+    if (typeof window !== "undefined")
+      return Number(localStorage.getItem('step') || 1)
     const preValue = JSON.parse(localStorage.getItem("StepTwo")) || {};
     return preValue;
   });
   const [errors, setError] = useState({});
 
   useEffect(() => {
+    if (typeof window !== "undefined")
+      return Number(localStorage.getItem('step') || 1)
     localStorage.setItem("StepTwo", JSON.stringify(formValue));
   }, [formValue]);
 

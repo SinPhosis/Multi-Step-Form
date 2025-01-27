@@ -7,6 +7,8 @@ export const StepThree = ({ setStep }) => {
   const [errors, setError] = useState({});
 
   useEffect(() => {
+    if (typeof window !== "undefined")
+      return Number(localStorage.getItem('step') || 1)
     const savedData = localStorage.getItem("StepThree");
     if (savedData) {
       const parsedData = JSON.parse(savedData);
@@ -21,6 +23,8 @@ export const StepThree = ({ setStep }) => {
   }, []);
 
   useEffect(() => {
+    if (typeof window !== "undefined")
+      return Number(localStorage.getItem('step') || 1)
     localStorage.setItem("StepThree", JSON.stringify(formValue));
   }, [formValue]);
 

@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 
 export const StepOne = ({ setStep }) => {
   const [formValue, setFormValue] = useState(() => {
+    if (typeof window !== "undefined")
+      return Number(localStorage.getItem('step') || 1)
     const preValue = JSON.parse(localStorage.getItem("StepOne")) || {};
     return preValue;
   });
@@ -11,6 +13,8 @@ export const StepOne = ({ setStep }) => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
+      if (typeof window !== "undefined")
+        return Number(localStorage.getItem('step') || 1)
       localStorage.setItem("StepOne", JSON.stringify(formValue));
     }, 500);
     return () => clearTimeout(timeout); 
