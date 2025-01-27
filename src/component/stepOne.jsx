@@ -8,61 +8,43 @@ export const StepOne = ({ setStep }) => {
   });
   const [errors, setError] = useState({});
 
+
   useEffect(() => {
-    localStorage.setItem("StepOne", JSON.stringify(formValue));
+    const timeout = setTimeout(() => {
+      localStorage.setItem("StepOne", JSON.stringify(formValue));
+    }, 500);
+    return () => clearTimeout(timeout); 
   }, [formValue]);
 
   const onSubmit = () => {
     let nextStep = true;
 
-    if (!formValue.firstName || formValue.firstName.trim().length === 0) {
-      setError((prev) => ({
-        ...prev,
-        firstName: "Please enter your first name.",
-      }));
-      nextStep = false;
-    } else {
-      setError((prev) => ({ ...prev, firstName: "" }));
-    }
-
-    if (!formValue.lastName || formValue.lastName.trim().length === 0) {
-      setError((prev) => ({
-        ...prev,
-        lastName: "Please enter your last name.",
-      }));
-      nextStep = false;
-    } else {
-      setError((prev) => ({ ...prev, lastName: "" }));
-    }
-
-    if (!formValue.userName || formValue.userName.trim().length === 0) {
-      setError((prev) => ({
-        ...prev,
-        userName: "Please enter your username.",
-      }));
-      nextStep = false;
-    } else {
-      setError((prev) => ({ ...prev, userName: "" }));
-    }
+    ["firstName", "lastName", "userName"].forEach((field) => {
+      if (!formValue[field] || formValue[field].trim().length === 0) {
+        setError((prev) => ({
+          ...prev,
+          [field]: `Please enter your ${field.replace("Name", " name")}.`,
+        }));
+        nextStep = false;
+      } else {
+        setError((prev) => ({ ...prev, [field]: "" }));
+      }
+    });
 
     if (nextStep) {
       setStep(2);
+    } else {
+ 
+      const firstErrorKey = Object.keys(errors).find((key) => errors[key]);
+      if (firstErrorKey) {
+        document.getElementById(firstErrorKey)?.focus();
+      }
     }
   };
 
-  const onFirstNameChange = (e) => {
-    setError((prevErrors) => ({ ...prevErrors, firstName: null }));
-    setFormValue({ ...formValue, firstName: e.target.value });
-  };
-
-  const onLastNameChange = (e) => {
-    setError((prevErrors) => ({ ...prevErrors, lastName: null }));
-    setFormValue({ ...formValue, lastName: e.target.value });
-  };
-
-  const onUserNameChange = (e) => {
-    setError((prevErrors) => ({ ...prevErrors, userName: null }));
-    setFormValue({ ...formValue, userName: e.target.value });
+  const handleInputChange = (field) => (e) => {
+    setError((prevErrors) => ({ ...prevErrors, [field]: null })); 
+    setFormValue({ ...formValue, [field]: e.target.value });
   };
 
   return (
@@ -79,74 +61,43 @@ export const StepOne = ({ setStep }) => {
                 Please provide all current information accurately.
               </div>
             </div>
-            <div className="w-[416px] h-[228px] flex-col justify-start items-start gap-3 inline-flex">
-              <div className="self-stretch h-[68px] flex-col justify-start items-start gap-2 flex mb-[20px]">
+            {["firstName", "lastName", "userName"].map((field, idx) => (
+              <div
+                key={idx}
+                className="h-[68px] flex-col justify-start items-start gap-2 inline-flex mb-[20px]"
+              >
                 <div className="self-stretch">
-                  <span className="text-slate-700 text-sm font-semibold font-['Inter'] leading-none">
-                    First Name{" "}
-                  </span>
+                  <label
+                    htmlFor={field}
+                    className="text-slate-700 text-sm font-semibold font-['Inter'] leading-none"
+                  >
+                    {field.replace("Name", " Name")}
+                  </label>
                   <span className="text-[#e14942] text-sm font-semibold font-['Inter'] leading-none">
                     *
                   </span>
                 </div>
                 <div>
                   <input
-                    placeholder="Your first name"
-                    id="firstName"
-                    value={formValue.firstName || ""}
-                    onChange={onFirstNameChange}
+                    placeholder={`Your ${field.replace("Name", " name")}`}
+                    id={field}
+                    value={formValue[field] || ""}
+                    onChange={handleInputChange(field)}
+                    aria-invalid={errors[field] ? "true" : "false"}
+                    aria-describedby={`${field}-error`}
                     className="h-11 w-[416px] p-3 rounded-lg border border-[#0ca5e9] justify-start text-base font-normal font-['Inter'] leading-tight items-center inline-flex"
                   />
-                  {errors.firstName ? (
-                    <p className="text-red-500">{errors.firstName}</p>
+                  {errors[field] ? (
+                    <p
+                      id={`${field}-error`}
+                      className="text-red-500 text-sm mt-1"
+                    >
+                      {errors[field]}
+                    </p>
                   ) : null}
                 </div>
               </div>
-              <div className="h-[68px] flex-col justify-start items-start gap-2 inline-flex mb-[20px]">
-                <div className="self-stretch">
-                  <span className="text-slate-700 text-sm font-semibold font-['Inter'] leading-none">
-                    Last Name{" "}
-                  </span>
-                  <span className="text-[#e14942] text-sm font-semibold font-['Inter'] leading-none">
-                    *
-                  </span>
-                </div>
-                <div>
-                  <input
-                    placeholder="Your last name"
-                    id="lastName"
-                    value={formValue.lastName || ""}
-                    onChange={onLastNameChange}
-                    className="h-11 w-[416px] p-3 rounded-lg border border-[#0ca5e9] justify-start text-base font-normal font-['Inter'] leading-tight items-center inline-flex"
-                  />
-                  {errors.lastName ? (
-                    <p className="text-red-500">{errors.lastName}</p>
-                  ) : null}
-                </div>
-              </div>
-              <div className="h-[68px] flex-col justify-start items-start gap-2 inline-flex">
-                <div className="self-stretch">
-                  <span className="text-slate-700 text-sm font-semibold font-['Inter'] leading-none">
-                    Username{" "}
-                  </span>
-                  <span className="text-[#e14942] text-sm font-semibold font-['Inter'] leading-none">
-                    *
-                  </span>
-                </div>
-                <div>
-                  <input
-                    placeholder="Your username"
-                    id="userName"
-                    value={formValue.userName || ""}
-                    onChange={onUserNameChange}
-                    className="h-11 w-[416px] p-3 rounded-lg border border-[#0ca5e9] justify-start text-base font-normal font-['Inter'] leading-tight items-center inline-flex"
-                  />
-                  {errors.userName ? (
-                    <p className="text-red-500">{errors.userName}</p>
-                  ) : null}
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
           <div className="w-[416px] h-11 justify-start items-start gap-2 inline-flex mt-[130px]">
             <button
